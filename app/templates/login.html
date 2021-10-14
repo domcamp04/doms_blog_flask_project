@@ -3,7 +3,7 @@
 {% block content %}
 <h4>Login Here:</h4>
 <form action="" method='post'>
-    {{ login_form.csrd_token }}
+    {{ login_form.csrf_token }}
     <div class="form-group">
         <fieldset>
             {{ login_form.username.label }}

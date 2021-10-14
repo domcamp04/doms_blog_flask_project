@@ -23,6 +23,7 @@ def test():
 def register():
     register_form = UserInfoForm()
     if register_form.validate_on_submit():
+        print()
         # Grab Data from form
         username = register_form.username.data
         email = register_form.email.data
@@ -30,7 +31,7 @@ def register():
         # print(username, email, password)
         
         # check if username from the form  already exists in the User table
-        existing_user = User.query.filter_by(username=username)
+        existing_user = User.query.filter_by(username=username).all()
         # If there is a user with that username message them asking to try again
         if existing_user:
             # Flash a warning message
@@ -40,6 +41,7 @@ def register():
 
         # Create a new user instance
         new_user = User(username, email, password)
+        print(new_user)
         # Add that user to the database
         db.session.add(new_user)
         db.session.commit()
@@ -95,7 +97,7 @@ def createpost():
 
         flash(f'The post {title} has been created.', 'primary')
         return redirect(url_for('index'))
-        
+
     return render_template('createpost.html', form=form)
 
 
