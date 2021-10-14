@@ -1,9 +1,10 @@
-from app import app
+from app import app, db, mail
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from app.forms import LoginForm, UserInfoForm, PostForm
 from app.models import User, Post
-from app import db
+
 
 
 @app.route('/')
@@ -47,6 +48,14 @@ def register():
         db.session.commit()
         # Flash a success message thanking them for signing up
         flash(f'Thank you {username}, you have successfully registered!', 'success')
+
+        # Send welcome email to new user
+        welcome_message = Message('Welcome to the Kekambas Blog!', [email])
+        welcome_message.body = f'Dear {username}, Thank you for signing up for our blog. We are so excited to have you.'
+
+        # Send welcome message
+        mail.send(welcome_message)
+
         # Redirecting them to the home page
         return redirect(url_for('index'))
 
@@ -101,4 +110,22 @@ def createpost():
     return render_template('createpost.html', form=form)
 
 
-    
+@app.route('/my-account')
+@login_required
+def my_account():
+    return render_template('my_account.html')
+
+
+@app.route('/my-posts')
+@login_required
+def my_posts():
+    posts = current_user.posts
+    return render_template('my_posts.html', posts=posts)
+
+
+@app.route('/posts/<int:post_id>')
+def post_detail(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post_detail.html', post=post)
+
+ 
