@@ -9,7 +9,8 @@ from app import db
 @app.route('/')
 def index():
     title = 'Coding Temple Flask'
-    return render_template('index.html', title=title)
+    posts = Post.query.all()
+    return render_template('index.html', title=title, posts=posts)
 
 
 @app.route('/products')
@@ -91,6 +92,10 @@ def createpost():
         new_post = Post(title, content, current_user.id)
         db.session.add(new_post)
         db.session.commit()
+
+        flash(f'The post {title} has been created.', 'primary')
+        return redirect(url_for('index'))
+        
     return render_template('createpost.html', form=form)
 
 
