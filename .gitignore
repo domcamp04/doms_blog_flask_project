@@ -3,3 +3,7 @@ kekambas_venv1/
 __pycache__/
 
 .env
+
+.vscode/
+
+app.db
